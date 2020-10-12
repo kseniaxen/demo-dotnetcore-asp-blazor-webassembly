@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Advanced.Models;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Identity;
 
 namespace Advanced {
     public class Startup {
@@ -36,6 +37,9 @@ namespace Advanced {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+
+            services.AddDbContext<IdentityContext>(opts => opts.UseSqlServer(Configuration["ConnectionStrings:IdentityConnection"]));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
         }
 
         public void Configure(IApplicationBuilder app, DataContext context) {
